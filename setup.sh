@@ -18,3 +18,10 @@ if [ ! -f "$DEST/.env" ]; then
 fi
 
 echo "✅ Proyecto desplegado en $DEST"
+
+echo "📦 Instalando dependencias con Composer..."
+cd "$DEST"
+composer install --no-interaction --prefer-dist
+
+sudo chown -R www-data:www-data "$DEST"
+sudo chmod -R 755 "$DEST"

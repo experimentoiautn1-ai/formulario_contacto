@@ -1,17 +1,14 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
+
 use Dotenv\Dotenv;
 
+// Cargar variables de entorno desde el mismo directorio
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$conn = new mysqli(
-    $_ENV['MYSQL_HOST'],
-    $_ENV['MYSQL_USER'],
-    $_ENV['MYSQL_PASSWORD'],
-    $_ENV['MYSQL_DATABASE']
-);
-
+// Conexión a MySQL
+$conn = new mysqli('db', $_ENV['MYSQL_USER'], $_ENV['MYSQL_PASSWORD'], $_ENV['MYSQL_DATABASE']);
 if ($conn->connect_error) {
     die("❌ Conexión fallida: " . $conn->connect_error);
 }
@@ -20,7 +17,7 @@ if ($conn->connect_error) {
 $conn->query("CREATE TABLE IF NOT EXISTS contactos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
-    correo VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     mensaje TEXT NOT NULL,
     ip VARCHAR(45) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -28,16 +25,18 @@ $conn->query("CREATE TABLE IF NOT EXISTS contactos (
 
 $mensajeError = null;
 
+// Procesar POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nombre = $conn->real_escape_string($_POST["nombre"]);
-    $correo = $conn->real_escape_string($_POST["correo"]);
+    $email = $conn->real_escape_string($_POST["email"]);
     $mensaje = $conn->real_escape_string($_POST["mensaje"]);
     $ip = $_SERVER['REMOTE_ADDR'];
 
-    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-        $mensajeError = "❌ Correo inválido.";
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $mensajeError = "❌ Email inválido.";
     } else {
-        $tiempoEspera = 900;
+        // Cooldown por IP (ejemplo: 900 segundos)
+        $cooldownSegundos = 900;
         $stmt = $conn->prepare("SELECT fecha FROM contactos WHERE ip = ? ORDER BY fecha DESC LIMIT 1");
         $stmt->bind_param("s", $ip);
         $stmt->execute();
@@ -45,49 +44,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($stmt->fetch()) {
             $ultimoTiempo = strtotime($ultimaFecha);
             $ahora = time();
-            if (($ahora - $ultimoTiempo) < $tiempoEspera) {
-                $mensajeError = "⚠️ Debes esperar " . ($tiempoEspera - ($ahora - $ultimoTiempo)) . " segundos antes de enviar otro mensaje.";
+            if (($ahora - $ultimoTiempo) < $cooldownSegundos) {
+                $mensajeError = "⚠️ Debes esperar " . ($cooldownSegundos - ($ahora - $ultimoTiempo)) . " segundos antes de enviar otro mensaje.";
             }
         }
         $stmt->close();
 
+        // Si no hay error, insertar en base de datos y enviar email
         if (!$mensajeError) {
-            $stmt = $conn->prepare("INSERT INTO contactos (nombre, correo, mensaje, ip) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $nombre, $correo, $mensaje, $ip);
+            $stmt = $conn->prepare("INSERT INTO contactos (nombre, email, mensaje, ip) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $nombre, $email, $mensaje, $ip);
             $stmt->execute();
             $stmt->close();
 
+            // Incluir script de envío de correo
             require_once __DIR__ . '/mail.php';
-            header("Location: /index.php?enviado=1");
+
+            // Redirigir con parámetro de éxito
+            header("Location: index.php?enviado=1");
             exit();
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de contacto</title>
+    <title>Formulario de Contacto</title>
     <link rel="stylesheet" href="formulario.css">
 </head>
 <body>
     <div class="formulario-contenedor">
         <?php if (isset($_GET['enviado'])): ?>
-            <div class="formulario-alerta formulario-exito" id="formulario-mensaje-exito">
+            <div class="formulario-alerta formulario-exito" id="mensajeExito">
                 <span>✅ Mensaje enviado correctamente.</span>
-                <button class="formulario-cerrar" onclick="document.getElementById('formulario-mensaje-exito').remove()">✖</button>
+                <button class="formulario-cerrar" onclick="document.getElementById('mensajeExito').remove()">✖</button>
             </div>
         <?php endif; ?>
 
         <?php if ($mensajeError): ?>
-            <div class="formulario-alerta formulario-error" id="formulario-mensaje-error">
+            <div class="formulario-alerta formulario-error" id="mensajeError">
                 <span><?= htmlspecialchars($mensajeError) ?></span>
-                <button class="formulario-cerrar" onclick="document.getElementById('formulario-mensaje-error').remove()">✖</button>
+                <button class="formulario-cerrar" onclick="document.getElementById('mensajeError').remove()">✖</button>
             </div>
         <?php endif; ?>
 
-        <?php include 'formulario.html'; ?>
+        <?php include __DIR__ . '/formulario.html'; ?>
     </div>
 </body>
 </html>

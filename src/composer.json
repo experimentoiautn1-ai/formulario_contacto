@@ -1,6 +1,16 @@
 {
-  "require": {
-    "phpmailer/phpmailer": "^6.9",
-    "vlucas/phpdotenv": "^5.6"
-  }
+    "name": "experimento_ia/formulario-contacto",
+    "description": "Formulario de contacto hecho con IA",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "FormContacto\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
