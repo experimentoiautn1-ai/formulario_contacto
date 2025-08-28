@@ -23,7 +23,7 @@ Antes de iniciar, asegúrate de tener instalado:
 
 ## ⚙️ Instalación
 
-1. **Clonar o copiar el proyecto** a tu servidor:
+1. **Clonar o copiar el proyecto** a tu servidor:  
 
 ```bash
 git clone https://github.com/experimentoiautn1-ai/formulario_contacto <donde sea>
@@ -32,8 +32,8 @@ cd /var/www/html/formulario_contacto/src
   
 Aunque es recomendado en `/var/www/html/formulario_contacto`
 
-2. **Iniciar el setup**:
+2. **Iniciar el setup**:  
 Corriendo `./setup.sh` los archivos del `src/` serán copiados dentro de `/var/www/html/formulario_contacto` 
 
-3. **Iniciar los servicios**:
+3. **Iniciar los servicios**:  
 Correr `./init_servicios.sh` inicializa (si es que no están inicializados) los servicios de PHP y MySQL
