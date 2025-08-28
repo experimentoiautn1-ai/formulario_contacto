@@ -11,6 +11,7 @@ $conn = new mysqli(
     $_ENV['MYSQL_PASSWORD'],
     $_ENV['MYSQL_DATABASE']
 );
+
 if ($conn->connect_error) {
     die("❌ Conexión fallida: " . $conn->connect_error);
 }

@@ -1,1 +1,18 @@
-vendor
+# Dependencias PHP
+/src/vendor/
+
+# Configuración sensible
+/src/.env
+.env
+.env.local
+.env.*.local
+
+# Archivos de sistema
+*.log
+*.cache
+*.tmp
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
