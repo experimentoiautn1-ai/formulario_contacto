@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="formulario.css">
+
+<form id="formulario-contacto" method="POST" action="/index.php">
+    <h2 id="formulario-titulo">Contáctanos</h2>
+
+    <div class="formulario-separador"></div>
+
+    <div class="formulario-grupo">
+        <input type="text" name="nombre" required placeholder="Tu nombre">
+        <input type="email" name="correo" required placeholder="Tu correo de contacto">
+    </div>
+
+    <textarea rows="5" name="mensaje" required placeholder="Escribe tu mensaje"></textarea>
+
+    <div id="formulario-botones">
+        <button class="formulario-boton" type="reset">Reiniciar</button>
+        <button class="formulario-boton" type="submit">Enviar</button>
+    </div>
+</form>
