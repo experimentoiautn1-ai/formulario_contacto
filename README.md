@@ -25,40 +25,24 @@ Antes de iniciar la instalación, asegúrate de contar con:
 
 1. **Clonar el repositorio en tu servidor**
    ```bash
-   git clone https://github.com/tuusuario/formulario_contacto.git
+   git clone https://github.com/experimentoiautn1-ai/formulario_contacto.git
    cd formulario_contacto
    ```
 
-2. **Instalar dependencias PHP con Composer**
+2. **Correr el instalador**
+   Esto copia los archivos necesarios dentro de `/var/www/html/formulario_contacto`.  
    ```bash
-   composer install
+   ./setup.sh
    ```
 
-3. **Configurar variables de entorno**
-   - Copiar el archivo `.env.example` a `.env`:
-     ```bash
-     cp .env.example .env
-     ```
+4. **Configurar variables de entorno**
    - Editar `.env` y completar con:
      - Credenciales MySQL (`MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`).
      - Datos de tu servidor SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`).
      - Direcciones de correo (`MAIL_FROM`, `MAIL_TO`).
-
-4. **Configurar la base de datos**
-   - Conectarse a MySQL con el root:
-     ```bash
-     mysql -u root -p
-     ```
-   - Crear la base y el usuario (ajusta según tu `.env`):
-     ```sql
-     CREATE DATABASE database_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-     CREATE USER 'nombre_usuario'@'localhost' IDENTIFIED BY 'contraseña123';
-     GRANT ALL PRIVILEGES ON database_name.* TO 'nombre_usuario'@'localhost';
-     FLUSH PRIVILEGES;
-     ```
-
-   ⚠️ Si usas Docker, reemplaza `localhost` por el nombre del servicio (ej. `db`).
-
+  
+⚠️ Si usas Docker, reemplaza `localhost` por el nombre del servicio (ej. `db`).
+  
 5. **Configurar permisos de la carpeta**
    ```bash
    sudo chown -R www-data:www-data /var/www/html/formulario_contacto
@@ -69,18 +53,8 @@ Antes de iniciar la instalación, asegúrate de contar con:
 
 ## ▶️ Puesta en marcha
 
-1. Verifica que Apache/Nginx y MySQL estén corriendo:
-   ```bash
-   sudo systemctl start apache2
-   sudo systemctl start mysql
-   ```
-
-2. Copia el proyecto a la carpeta pública de tu servidor web (si aún no lo hiciste):
-   ```bash
-   sudo cp -r formulario_contacto /var/www/html/
-   ```
-
-3. Accede desde tu navegador:
+1. Verifica que Apache/Nginx y MySQL estén corriendo con `./init_servicios`.
+2. Accede desde tu navegador:
    ```
    http://tuservidor/formulario_contacto/
    ```
@@ -102,7 +76,8 @@ Antes de iniciar la instalación, asegúrate de contar con:
 ---
 
 ## 📦 Estructura del proyecto
-
+Esta estructura debe de estar dentro de `/var/www/html/formulario_contacto` después del `./setup`.  
+  
 ```
 formulario_contacto/
 ├── index.php          # Lógica principal del formulario
@@ -120,7 +95,6 @@ formulario_contacto/
 ## 🛡️ Notas de Seguridad
 
 - **No uses el root de MySQL** en `.env`, crea un usuario específico.
-- Mantén tu `.env` fuera de acceso público (`.gitignore` ya lo cubre).
 - En producción, establece:
   ```env
   APP_ENV=production
