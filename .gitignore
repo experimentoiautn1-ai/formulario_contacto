@@ -1,6 +1,3 @@
-# Dependencias PHP
-/src/vendor/
-
 # Configuración sensible
 /src/.env
 .env
