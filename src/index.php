@@ -8,10 +8,16 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Conexión a MySQL
-$conn = new mysqli('db', $_ENV['MYSQL_USER'], $_ENV['MYSQL_PASSWORD'], $_ENV['MYSQL_DATABASE']);
+$conn = new mysqli(
+    $_ENV['MYSQL_HOST'],
+    $_ENV['MYSQL_USER'],
+    $_ENV['MYSQL_PASSWORD'],
+    $_ENV['MYSQL_DATABASE']
+);
 if ($conn->connect_error) {
     die("❌ Conexión fallida: " . $conn->connect_error);
 }
+
 
 // Crear tabla si no existe
 $conn->query("CREATE TABLE IF NOT EXISTS contactos (

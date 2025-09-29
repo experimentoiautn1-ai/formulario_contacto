@@ -4,14 +4,15 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $nombre = htmlspecialchars($_POST['nombre'] ?? '');
-    $email  = htmlspecialchars($_POST['email'] ?? '');
+    $nombre  = htmlspecialchars($_POST['nombre'] ?? '');
+    $email   = htmlspecialchars($_POST['email'] ?? '');
     $mensaje = htmlspecialchars($_POST['mensaje'] ?? '');
 
     $mail = new PHPMailer(true);
@@ -21,18 +22,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->isSMTP();
         $mail->Host       = $_ENV['SMTP_HOST'];
         $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['SMTP_USER'];
-        $mail->Password   = $_ENV['SMTP_PASS'];
+        $mail->Username   = $_ENV['SMTP_USERNAME'];
+        $mail->Password   = $_ENV['SMTP_PASSWORD'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = $_ENV['SMTP_PORT'];
 
         // Remitente y destinatario
-        $mail->setFrom($email, $nombre);
+        $mail->setFrom($_ENV['MAIL_FROM'], "Formulario de Contacto");
+        $mail->addReplyTo($email, $nombre); // visitante como "reply-to"
         $mail->addAddress($_ENV['MAIL_TO']);
 
         // Contenido
         $mail->isHTML(true);
-        $mail->Subject = "Nuevo mensaje de contacto";
+        $mail->Subject = $_ENV['MAIL_SUBJECT'] ?? "Nuevo mensaje de contacto";
         $mail->Body    = "<p><strong>Nombre:</strong> {$nombre}</p>
                           <p><strong>Email:</strong> {$email}</p>
                           <p><strong>Mensaje:</strong><br>{$mensaje}</p>";
