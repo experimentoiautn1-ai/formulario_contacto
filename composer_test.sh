@@ -1,0 +1,1 @@
+composer require vlucas/phpdotenv:^5.5 phpmailer/phpmailer:^6.8 -vvv
