@@ -17,11 +17,31 @@ if [ ! -f "$DEST/.env" ]; then
     echo "🔑 Edita $DEST/.env con tus credenciales de MySQL y SMTP."
 fi
 
-echo "✅ Proyecto desplegado en $DEST"
+# Cargar variables del .env
+set -a
+source "$DEST/.env"
+set +a
 
 echo "📦 Instalando dependencias con Composer..."
 cd "$DEST"
 composer install --no-interaction --prefer-dist
 
+# Crear DB y usuario MySQL con root
+echo "🔐 Se necesita la contraseña de root de MySQL para crear DB y usuario..."
+read -s -p "Introduce la contraseña de root de MySQL: " MYSQL_ROOT_PASS
+echo ""
+
+mysql -u root -p"$MYSQL_ROOT_PASS" <<MYSQL_SCRIPT
+CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+
+echo "✅ Base de datos y usuario MySQL configurados."
+
+# Permisos correctos para Apache
 sudo chown -R www-data:www-data "$DEST"
 sudo chmod -R 755 "$DEST"
+
+echo "🎉 Instalación completa. Proyecto disponible en $DEST"

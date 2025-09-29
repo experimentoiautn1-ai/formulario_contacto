@@ -21,7 +21,7 @@
 
 .formulario-exito {
     background-color: #e6ffed;
-    color: #276749;
+    color: #27673d;
     border-left: 6px solid #38a169;
 }
 
@@ -65,7 +65,7 @@ form#formulario-contacto:hover {
 
 #formulario-titulo {
     font-size: 1.6rem;
-    color: #2d3748;
+    color: #1d3d28;
     text-align: center;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -91,8 +91,8 @@ input, textarea {
 
 input:focus, textarea:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+    border-color: #36a049;
+    box-shadow: 0 0 0 3px rgba(66, 225, 106, 0.3);
     background-color: #fff;
 }
 
@@ -102,8 +102,8 @@ textarea {
 }
 
 .formulario-boton {
-    background-color: #3182ce;
-    color: #fff;
+    background-color: #42e15f;
+    color: #1f241f;
     border: none;
     border-radius: 8px;
     padding: 0.75rem;
@@ -114,7 +114,7 @@ textarea {
 }
 
 .formulario-boton:hover {
-    background-color: #2b6cb0;
+    background-color: #2bb04e;
 }
 
 #formulario-botones {
