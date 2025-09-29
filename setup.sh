@@ -2,7 +2,7 @@
 set -e
 
 SRC_DIR="$(dirname "$0")/src"
-DEST="/var/www/html/formulario_contacto"
+DEST="/var/www/formulario_chatgpt"
 
 echo "📂 Creando directorio destino en $DEST..."
 sudo mkdir -p "$DEST"
