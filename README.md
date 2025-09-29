@@ -18,6 +18,7 @@ Antes de iniciar la instalación, asegúrate de contar con:
 - **Composer ≥ 2.x**
 - Acceso a un servidor **SMTP** válido (ejemplo: Gmail, Outlook, o tu propio dominio).
 - Acceso SSH al servidor dedicado.
+- Acceso a la contraseña de **root de MySQL** (solo se usa durante la instalación).
 
 ---
 
@@ -29,21 +30,22 @@ Antes de iniciar la instalación, asegúrate de contar con:
    cd formulario_contacto
    ```
 
-2. **Correr el instalador**
-   Esto copia los archivos necesarios dentro de `/var/www/html/formulario_contacto`.  
+2. **Correr el instalador**  
+   Esto copia los archivos dentro de `/var/www/html/formulario_contacto`, instala dependencias con Composer y crea la base de datos + usuario MySQL.  
+   Durante la instalación, se te pedirá la contraseña de **root de MySQL** para poder crear el usuario de aplicación de forma segura.
    ```bash
    ./setup.sh
    ```
 
-4. **Configurar variables de entorno**
-   - Editar `.env` y completar con:
+3. **Configurar variables de entorno**  
+   - Editar `.env` en `/var/www/html/formulario_contacto` y completar:
      - Credenciales MySQL (`MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`).
      - Datos de tu servidor SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`).
      - Direcciones de correo (`MAIL_FROM`, `MAIL_TO`).
   
 ⚠️ Si usas Docker, reemplaza `localhost` por el nombre del servicio (ej. `db`).
-  
-5. **Configurar permisos de la carpeta**
+
+4. **Configurar permisos de la carpeta**
    ```bash
    sudo chown -R www-data:www-data /var/www/html/formulario_contacto
    sudo chmod -R 755 /var/www/html/formulario_contacto
@@ -53,7 +55,7 @@ Antes de iniciar la instalación, asegúrate de contar con:
 
 ## ▶️ Puesta en marcha
 
-1. Verifica que Apache/Nginx y MySQL estén corriendo con `./init_servicios`.
+1. Verifica que Apache/Nginx y MySQL estén corriendo.
 2. Accede desde tu navegador:
    ```
    http://tuservidor/formulario_contacto/
@@ -76,8 +78,8 @@ Antes de iniciar la instalación, asegúrate de contar con:
 ---
 
 ## 📦 Estructura del proyecto
-Esta estructura debe de estar dentro de `/var/www/html/formulario_contacto` después del `./setup`.  
-  
+Después de correr `./setup.sh`, deberías tener en `/var/www/html/formulario_contacto`:  
+
 ```
 formulario_contacto/
 ├── index.php          # Lógica principal del formulario
@@ -94,12 +96,13 @@ formulario_contacto/
 
 ## 🛡️ Notas de Seguridad
 
-- **No uses el root de MySQL** en `.env`, crea un usuario específico.
+- **No uses el root de MySQL** en `.env`, el usuario de aplicación se crea automáticamente en la instalación.
 - En producción, establece:
   ```env
   APP_ENV=production
   APP_DEBUG=false
   ```
+- La contraseña de **root de MySQL nunca se guarda** en el proyecto. Solo se usa durante el `setup.sh`.
 
 ---
 
