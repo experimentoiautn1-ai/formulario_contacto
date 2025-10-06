@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $mensajeError = "❌ Email inválido.";
     } else {
-        // Cooldown por IP (ejemplo: 900 segundos)
-        $cooldownSegundos = 900;
+        // Cooldown por IP (ejemplo: 60 segundos)
+        $cooldownSegundos = 60;
         $stmt = $conn->prepare("SELECT fecha FROM contactos WHERE ip = ? ORDER BY fecha DESC LIMIT 1");
         $stmt->bind_param("s", $ip);
         $stmt->execute();

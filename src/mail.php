@@ -39,8 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                           <p><strong>Email:</strong> {$email}</p>
                           <p><strong>Mensaje:</strong><br>{$mensaje}</p>";
 
-        $mail->send();
-        echo "✅ Mensaje enviado correctamente";
+        if($mail->send()) {
+            echo "✅ Mensaje enviado correctamente";
+        } else {
+            echo "❌ Error al enviar el mensaje: {$mail->ErrorInfo}";
+        }
     } catch (Exception $e) {
         echo "❌ Error al enviar el mensaje: {$mail->ErrorInfo}";
     }
